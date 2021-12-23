@@ -13,11 +13,9 @@
   background: #ffffff;
   box-shadow: 1px 1px 6px #919191;
 
-  width: 87px;
-  height: 25px;
-  padding: 4px;
+  padding: 4px 6px;
   border-radius: 4px;
-  border: none; //rgba(0, 0, 0, 0.72);
+  border: none;
   position: relative;
 
   i.el-icon-video-play {

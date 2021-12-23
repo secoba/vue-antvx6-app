@@ -44,10 +44,10 @@
 <script>
 import '@antv/x6-vue-shape'
 import { Addon, DataUri, FunctionExt, Graph, Shape } from '@antv/x6'
-import { ports } from './graph/methods'
-import StartNode from './components/StartNode'
-import EndNode from './components/EndNode'
-import TaskNode from './components/TaskNode'
+import { endPorts, startPorts, taskPorts } from './graph/methods'
+import NodeStart from './components/NodeStart'
+import NodeEnd from './components/NodeEnd'
+import NodeTask from './components/NodeTask'
 import RightDrawer from './components/RightDrawer'
 
 export default {
@@ -176,28 +176,28 @@ export default {
       // 注册 vue 组件
       Graph.registerVueComponent('start-node-component', {
         template: `
-          <start-node></start-node>`,
+          <node-start></node-start>`,
         components: {
-          StartNode
+          NodeStart
         }
       }, true)
       Graph.registerVueComponent('end-node-component', {
         template: `
-          <end-node></end-node>`,
+          <node-end></node-end>`,
         components: {
-          EndNode
+          NodeEnd
         }
       }, true)
       Graph.registerVueComponent('task-node-component', {
         template: `
-          <task-node :node-data="nodeData"></task-node>`,
+          <node-task :node-data="nodeData"></node-task>`,
         data () {
           return {
             nodeData: self.nodeData
           }
         },
         components: {
-          TaskNode
+          NodeTask
         }
       }, true)
 
@@ -235,14 +235,17 @@ export default {
             this.showPorts(ports, true)
 
             // 添加删除
-            const type = node.store.data.type
-            const x = type === 'taskNode' ? 308 : 104
+            // const type = node.store.data.type
+            console.log(node.store.data.size)
+            const w = node.store.data.size.width + 6
+            // const h = node.store.data.height
+            //const x = type === 'taskNode' ? 308 : w
             node.addTools({
               name: 'button-remove',
               args: {
                 x: 0,
                 y: 0,
-                offset: { x: x, y: 4 }
+                offset: { x: w, y: 4 }
               }
             })
           }), 500
@@ -311,8 +314,8 @@ export default {
     startDragToGraph (type, e) {
       const graph = this.graph
       let node = null
-      this.showRight = false
       this.nodeId = ''
+      this.showRight = false
 
       // 验证 startNode endNode 是否已存在，只能添加一个
       if (['startNode', 'endNode'].includes(type)) {
@@ -329,9 +332,9 @@ export default {
             shape: 'vue-shape',
             x: 300,
             y: 300,
-            width: 97,
-            height: 35,
-            ports,
+            width: 120,
+            height: 40,
+            ports: startPorts,
             component: 'start-node-component'
           })
           break
@@ -341,9 +344,9 @@ export default {
             shape: 'vue-shape',
             x: 300,
             y: 300,
-            width: 97,
-            height: 35,
-            ports,
+            width: 120,
+            height: 40,
+            ports: endPorts,
             component: 'end-node-component'
           })
           break
@@ -355,7 +358,7 @@ export default {
             y: 300,
             width: 300,
             height: 121,
-            ports,
+            ports: taskPorts,
             data: {
               name: '任务节点',
               desc: '节点内容'
@@ -533,6 +536,11 @@ export default {
   z-index: 999;
   bottom: 20px;
   right: 20px;
+  border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+
+  ::v-deep .x6-widget-minimap {
+    border-radius: 4px;
+  }
 }
 </style>
